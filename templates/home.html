@@ -4,6 +4,9 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+        superuser
+    {% endif %}
   Hi {{ user.username }}!
   <a href="{% url 'logout' %}">Log Out</a>
 {% else %}
