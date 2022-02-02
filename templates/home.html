@@ -13,4 +13,8 @@
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}
+<form method="post" action="/" enctype="multipart/form-data">
+    {{ form.as_p }}
+    <button type="submit">upload</button>
+</form>
 {% endblock %}
