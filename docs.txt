@@ -1,0 +1,2 @@
+Documentation can be accessed at the "/admin/doc" endpoint
+when server is running and you are logged in as superuser
