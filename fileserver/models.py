@@ -1,15 +1,6 @@
 from django.db import models
 
 from django.conf import settings
-import uuid
-import os
-
-
-# def get_file_path(instance, filename):
-#     print('asd', filename)
-#     ext = filename.split('.')[-1]
-#     filename = f'{uuid.uuid4()}.{ext}'
-#     return os.path.join(settings.MEDIA_ROOT, filename)
 
 
 class Url(models.Model):
@@ -20,7 +11,7 @@ class Url(models.Model):
 
 
 class File(models.Model):
-    file = models.FileField(upload_to='', blank=True, null=True)
+    file = models.FileField(blank=True, null=True)
     filename = models.TextField(default='unknown')
 
     def __str__(self):
