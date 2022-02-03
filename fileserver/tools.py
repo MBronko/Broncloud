@@ -1,14 +1,12 @@
-import hashlib
 import rstr
 from .models import IdBinding
-from django.conf import settings
 
 
 def random_binding_id():
     length = 4
 
     while True:
-        binding_id = rstr.xeger('[A-Z]{%s}' % length)
+        binding_id = rstr.xeger('[A-Za-z]{%s}' % length)
 
         try:
             IdBinding.objects.get(binding_id=binding_id)
@@ -16,3 +14,7 @@ def random_binding_id():
             break
 
     return binding_id
+
+
+def get_resource_url(request, binding_id):
+    return f'{request.get_host()}/{binding_id}'

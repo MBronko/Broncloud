@@ -4,21 +4,88 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    {% if user.is_superuser %}
-        superuser
-    {% endif %}
-  Hi {{ user.username }}!
+  Hi {% if user.is_superuser %}admin{% endif %} {{ user.username }}!
   <a href="{% url 'logout' %}">Log Out</a>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}
-<form method="post" action="/" enctype="multipart/form-data">
+<form method="post" action="/" enctype="multipart/form-data" id="file_form">
     {{ file_form.as_p }}
-    <button type="submit">upload</button>
+    <button type="submit">upload file</button>
 </form>
-<form method="post" action="/url" enctype="multipart/form-data">
+<form method="post" action="/url" enctype="multipart/form-data" id="url_form">
     {{ url_form.as_p }}
-    <button type="submit">upload</button>
+    <button type="submit">shorten url</button>
 </form>
+
+<br>
+result: <span id="result_url"></span> <button onclick="copy_url()">Copy To Clipboard</button>
+<br>
+
+<script>
+async function submit_form(e) {
+    e.preventDefault();
+
+    let form = e.target;
+    let formdata = new FormData(form)
+    let req = {
+        method: form.method,
+        body: formdata
+    }
+
+    let response = await fetch(form.action, req);
+    let result = await response.text();
+
+    let url = document.getElementById('result_url');
+    url.innerText = result;
+
+    console.log(result);
+    {#location.reload();#}
+}
+
+document.getElementById('file_form').onsubmit = submit_form;
+document.getElementById('url_form').onsubmit = submit_form;
+
+function copy_url(){
+    let url = document.getElementById('result_url');
+
+    navigator.clipboard.writeText(url.innerText);
+}
+</script>
+
+{% if user.is_authenticated %}
+<br>
+uploaded files
+<table>
+    <tr><th>url</th><th>filename</th><th>private</th></tr>
+    {% for binding in posted_files %}
+        <tr>
+            <td><a href="/{{ binding.binding_id }}">{{ request.get_host }}/{{ binding.binding_id }}</a></td>
+            <td>{{ binding.file.filename }}</td>
+            <td>{{ binding.private }}</td>
+            <td><form action="/delete/{{ binding.binding_id }}" method="post">
+                {% csrf_token %}
+                <button type="submit">delete</button>
+            </form></td>
+        </tr>
+    {% endfor %}
+</table>
+<br>
+urls shortened
+<table>
+    <tr><th>url</th><th>redirect to</th><th>private</th></tr>
+    {% for binding in posted_urls %}
+        <tr>
+            <td><a href="/{{ binding.binding_id }}">{{ request.get_host }}/{{ binding.binding_id }}</a></td>
+            <td><a href="{{ binding.url.redirect_url }}">{{ binding.url.redirect_url }}</a></td>
+            <td>{{ binding.private }}</td>
+            <td><form action="/delete/{{ binding.binding_id }}" method="post">
+                {% csrf_token %}
+                <button type="submit">delete</button>
+            </form></td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
 {% endblock %}
