@@ -14,7 +14,11 @@
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}
 <form method="post" action="/" enctype="multipart/form-data">
-    {{ form.as_p }}
+    {{ file_form.as_p }}
+    <button type="submit">upload</button>
+</form>
+<form method="post" action="/url" enctype="multipart/form-data">
+    {{ url_form.as_p }}
     <button type="submit">upload</button>
 </form>
 {% endblock %}

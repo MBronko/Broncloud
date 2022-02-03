@@ -10,7 +10,7 @@ class RequestDemoAdmin(admin.ModelAdmin):
 
 @admin.register(Url)
 class RequestDemoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'url']
+    list_display = ['id', 'redirect_url']
 
 
 @admin.register(IdBinding)
