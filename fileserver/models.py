@@ -59,4 +59,4 @@ def handle_deleted_idbinding(sender, instance, **kwargs):
     if instance.file:
         instance.file.delete()
     if instance.url:
-        instance.file.delete()
+        instance.url.delete()
